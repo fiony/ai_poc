@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-poc-lipsync"
+version = "0.1.0"
+description = "CLI pipeline for generating HD lip-synced videos using SadTalker"
+readme = "README.md"
+authors = [{name = "AI Assistant"}]
+requires-python = ">=3.10"
+dependencies = [
+    "torch",
+    "torchvision",
+    "numpy",
+    "opencv-python",
+    "ffmpeg-python",
+    "librosa",
+    "tqdm",
+    "scipy",
+    "audioread",
+    "face-alignment",
+    "lpips",
+    "gfpgan",
+    "gdown",
+]
+
+[project.optional-dependencies]
+cli = ["rich"]
+
+[project.scripts]
+lipsync-tool = "lipsync_tool.cli:main"
