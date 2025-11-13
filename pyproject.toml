@@ -23,6 +23,8 @@ dependencies = [
     "lpips",
     "gfpgan",
     "gdown",
+    "imageio",
+    "requests",
 ]
 
 [project.optional-dependencies]

@@ -1,18 +1,20 @@
 # AI PoC – Lip-sync Generator
 
 This proof-of-concept packages an automated workflow for building a lip-sync
-video from a still portrait and a speech audio track. It wraps the
-[SadTalker](https://github.com/OpenTalker/SadTalker) project, handling
-repository cloning, checkpoint download and HD upscaling so you can focus on
-supplying the inputs.
+video from a still portrait and a speech audio track. It wraps either the
+[SadTalker](https://github.com/OpenTalker/SadTalker) or
+[Wav2Lip](https://github.com/Rudrabha/Wav2Lip) projects, handling repository
+cloning, checkpoint download and HD upscaling so you can focus on supplying the
+inputs.
 
 ## Features
 
-- **Automated resource management** – the official SadTalker repository and the
-  pretrained checkpoints are fetched on demand through the upstream helper
-  script.
+- **Automated resource management** – the required repositories and checkpoints
+  for SadTalker or Wav2Lip are fetched on demand through the upstream helper
+  scripts.
 - **Command line interface** – run a single command to create a lip-synced clip
-  from an image and an audio file.
+  from an image and an audio file, selecting the backend that best fits your
+  needs.
 - **1080p output** – the resulting video is upscaled to full HD using `ffmpeg`
   with high-quality bicubic filtering.
 - **Runtime dependency bootstrap** – optional `--install-deps` flag installs the
@@ -41,36 +43,59 @@ flag as shown below.
 
 ```bash
 lipsync-tool /path/to/portrait.jpg /path/to/speech.wav output.mp4 \
+  --engine sadtalker \
   --install-deps \
-  --cache-dir ~/.cache/sadtalker \
   --fps 25 \
   --resolution 512 \
   --preprocess full
 ```
 
-The first run clones the upstream SadTalker repository and downloads the
-pretrained checkpoints into the specified cache directory. Subsequent runs reuse
-these assets.
+Switch to the Wav2Lip backend by replacing `--engine sadtalker` with
+`--engine wav2lip` and optionally adjusting the Wav2Lip-specific flags documented
+below.
+
+The first run clones the upstream repository for the selected engine and
+downloads the pretrained checkpoints into the chosen cache directory.
+Subsequent runs reuse these assets.
 
 ### Options
 
-- `--resolution`: choose between the SadTalker 256 or 512 pipelines.
+#### Common
+
+- `--engine`: choose between the SadTalker or Wav2Lip integrations.
+- `--resolution`: choose between the SadTalker 256 or 512 pipelines (ignored by
+  Wav2Lip which adapts to the source portrait).
+- `--cache-dir`: override the cache directory for repositories and checkpoints.
+- `--no-upscale`: skip the 1080p upscaling stage.
+- `--keep-temp`: retain intermediate files for debugging.
+- `--log-level`: choose logging verbosity (`DEBUG`, `INFO`, `WARNING`, `ERROR`).
+
+#### SadTalker-specific
+
 - `--preprocess`: select the upstream preprocessing strategy (`full`, `crop`,
   or `extreme_crop`).
 - `--expression-scale`: increase or decrease facial motion intensity.
 - `--no-still`: allow more head movement by disabling SadTalker's still mode.
 - `--enhancer`: forward an enhancer flag to SadTalker (e.g., `gfpgan`).
-- `--no-upscale`: skip the 1080p upscaling stage.
-- `--keep-temp`: retain intermediate files for debugging.
-- `--log-level`: choose logging verbosity (`DEBUG`, `INFO`, `WARNING`, `ERROR`).
+
+#### Wav2Lip-specific
+
+- `--wav2lip-pads`: padding values around detected faces (top, bottom, left,
+  right).
+- `--wav2lip-static` / `--wav2lip-no-static`: toggle single-image mode.
+- `--wav2lip-nosmooth`: disable temporal smoothing.
+- `--wav2lip-batch-size`: adjust the generator batch size.
+- `--wav2lip-face-det-batch-size`: adjust the face detector batch size.
+- `--wav2lip-resize-factor`: control pre-inference downscaling.
+- `--wav2lip-crop`: provide a manual crop rectangle (`x1 y1 x2 y2`).
 
 ## How it works
 
 1. The CLI validates inputs and optionally installs Python dependencies.
-2. `SadTalkerResources` clones the official SadTalker repository and invokes
-   the provided model download helper to populate checkpoints.
-3. `LipSyncPipeline` launches the upstream `inference.py` script to produce a
-   preliminary MP4 clip inside a temporary directory.
+2. `SadTalkerResources` or `Wav2LipResources` clones the corresponding
+   repository and downloads checkpoints.
+3. `LipSyncPipeline` launches the selected engine's `inference.py` script to
+   produce a preliminary MP4 clip inside a temporary directory.
 4. The generated clip is upscaled to 1080p using `ffmpeg` with bicubic
    resampling while preserving the audio track.
 
