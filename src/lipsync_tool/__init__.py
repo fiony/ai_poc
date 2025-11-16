@@ -1,5 +1,6 @@
 """Lip-sync generation toolkit supporting SadTalker and Wav2Lip backends."""
 
+from .conflict_checker import find_conflicts
 from .pipeline import (
     EngineName,
     LipSyncPipeline,
@@ -16,4 +17,5 @@ __all__ = [
     "SadTalkerSettings",
     "Wav2LipResources",
     "Wav2LipSettings",
+    "find_conflicts",
 ]

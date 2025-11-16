@@ -32,3 +32,4 @@ cli = ["rich"]
 
 [project.scripts]
 lipsync-tool = "lipsync_tool.cli:main"
+lipsync-conflicts = "lipsync_tool.conflict_checker:main"

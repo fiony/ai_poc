@@ -129,6 +129,20 @@ orchestration layer.
 - If the checkpoint download fails, delete the cache directory and rerun with
   `--install-deps` to retry.
 
+## Keep PRs conflict-free
+
+When collaborating on this repository, run the lightweight conflict scan before
+opening or updating a pull request:
+
+```bash
+lipsync-conflicts --fail-on-found
+```
+
+The command crawls the project tree (excluding `.git`, virtual environments, and
+`__pycache__` folders) and reports any leftover merge markers such as
+`<<<<<<< HEAD`. Using the `--fail-on-found` flag makes the command exit with an
+error so CI or pre-commit hooks can block conflicted revisions early.
+
 ## License
 
 This repository contains original glue code licensed under the MIT license. It
