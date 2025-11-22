@@ -11,6 +11,7 @@ import os
 import shutil
 import subprocess
 import sys
+from urllib.request import urlretrieve
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterable, Literal, Sequence
@@ -29,6 +30,9 @@ class SadTalkerResources:
     repo_url: str = "https://github.com/OpenTalker/SadTalker.git"
     models_script: str = "scripts/download_models.py"
     checkpoints_subdir: str = "checkpoints"
+    raw_script_url: str = (
+        "https://raw.githubusercontent.com/OpenTalker/SadTalker/master/scripts/download_models.py"
+    )
 
     def repo_path(self) -> Path:
         return self.root_dir / "repo"
@@ -74,6 +78,13 @@ class SadTalkerResources:
                 shutil.rmtree(repo)
             self._git_clone()
             script = repo / self.models_script
+        if not script.exists():
+            LOGGER.warning(
+                "SadTalker download script still missing after re-clone; "
+                "fetching directly from upstream"
+            )
+            script.parent.mkdir(parents=True, exist_ok=True)
+            urlretrieve(self.raw_script_url, script)
         if not script.exists():
             raise FileNotFoundError(
                 "SadTalker download script not found at %s" % script
