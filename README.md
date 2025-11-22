@@ -1,8 +1,9 @@
 # AI PoC – Lip-sync Generator
 
 This proof-of-concept packages an automated workflow for building a lip-sync
-video from a still portrait and a speech audio track.  It wraps the
-[Wav2Lip](https://github.com/Rudrabha/Wav2Lip) project, handling repository
+video from a still portrait and a speech audio track. It wraps either the
+[SadTalker](https://github.com/OpenTalker/SadTalker) or
+[Wav2Lip](https://github.com/Rudrabha/Wav2Lip) projects, handling repository
 cloning, checkpoint download and HD upscaling so you can focus on supplying the
 inputs.
 

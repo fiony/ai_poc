@@ -1,5 +1,21 @@
-"""Lip-sync generation toolkit built on top of Wav2Lip."""
+"""Lip-sync generation toolkit supporting SadTalker and Wav2Lip backends."""
 
-from .pipeline import LipSyncPipeline, Wav2LipResources
+from .conflict_checker import find_conflicts
+from .pipeline import (
+    EngineName,
+    LipSyncPipeline,
+    SadTalkerResources,
+    SadTalkerSettings,
+    Wav2LipResources,
+    Wav2LipSettings,
+)
 
-__all__ = ["LipSyncPipeline", "Wav2LipResources"]
+__all__ = [
+    "EngineName",
+    "LipSyncPipeline",
+    "SadTalkerResources",
+    "SadTalkerSettings",
+    "Wav2LipResources",
+    "Wav2LipSettings",
+    "find_conflicts",
+]
