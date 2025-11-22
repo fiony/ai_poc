@@ -159,6 +159,10 @@ orchestration layer.
 - Ensure `ffmpeg` is installed and callable from the shell.
 - The SadTalker inference step benefits greatly from CUDA acceleration; CPU
   execution can take several minutes for a short clip.
+- If SadTalker checkpoint downloads fail with a missing `scripts/download_models.py`,
+  delete the cache directory you passed via `--cache-dir` (or `.cache/sadtalker`
+  by default) and rerun the command to trigger a fresh clone of the upstream
+  repository.
 - If the checkpoint download fails, delete the cache directory and rerun with
   `--install-deps` to retry.
 

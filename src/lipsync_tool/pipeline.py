@@ -66,6 +66,15 @@ class SadTalkerResources:
         repo = self.repo_path()
         script = repo / self.models_script
         if not script.exists():
+            LOGGER.warning(
+                "SadTalker download script missing at %s; re-cloning repository",
+                script,
+            )
+            if repo.exists():
+                shutil.rmtree(repo)
+            self._git_clone()
+            script = repo / self.models_script
+        if not script.exists():
             raise FileNotFoundError(
                 "SadTalker download script not found at %s" % script
             )
